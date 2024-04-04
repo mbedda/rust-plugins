@@ -34,7 +34,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Oxide.Plugins
 {
-    [Info("ZNQuests", "DocValerian", "1.2.5")]
+    [Info("ZNQuests", "DocValerian", "1.2.6")]
     class ZNQuests : RustPlugin
     {
         static ZNQuests Plugin;
@@ -132,7 +132,11 @@ namespace Oxide.Plugins
             {
                 OnPlayerDisconnected(player);
                 killUI(player);
+            }
 
+            foreach (var monitor in playersTravelMonitor)
+            {
+                monitor.Value.KillTimer();
             }
             _gm.SaveData();
         }
@@ -191,16 +195,16 @@ namespace Oxide.Plugins
             // catch quests                                             difficulty = "easy", 
             new ZQuest{ type = "catch", item = "fish",                  difficulty = "easy", amountGoal = 5, desc = "Catch a number of (any) Fish" },
             // travel quests                                            difficulty = "easy", 
-            new ZQuest{ type = "travel", item = "saddletest",           difficulty = "easy", amountGoal = 500, desc = "Ride a Horse for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "miniheliseat",         difficulty = "easy", amountGoal = 1000, desc = "Pilot a Minicopter for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "transporthelicopilot", difficulty = "easy", amountGoal = 1000, desc = "Co-Pilot a Scrapheli for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "smallboatdriver",      difficulty = "easy", amountGoal = 1000, desc = "Captain a Boat for total distance (mount to unmount point)" },
+            new ZQuest{ type = "travel", item = "saddletest",           difficulty = "easy", amountGoal = 500, desc = "Ride a Horse for total distance" },
+            new ZQuest{ type = "travel", item = "miniheliseat",         difficulty = "easy", amountGoal = 1000, desc = "Pilot a Minicopter for total distance" },
+            new ZQuest{ type = "travel", item = "transporthelicopilot", difficulty = "easy", amountGoal = 1000, desc = "Co-Pilot a Scrapheli for total distance" },
+            new ZQuest{ type = "travel", item = "smallboatdriver",      difficulty = "easy", amountGoal = 1000, desc = "Captain a Boat for total distance" },
 
-            new ZQuest{ type = "travel", item = "snowmobiledriverseat",             difficulty = "easy", amountGoal = 1000, desc = "Drive a SnowMobile for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarinesolodriverstanding",      difficulty = "easy", amountGoal = 1000, desc = "Captain a Solo Submarine for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarineduodriverseat",           difficulty = "easy", amountGoal = 1000, desc = "Captain a Duo Submarine for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "modularcardriverseat",             difficulty = "easy", amountGoal = 1000, desc = "Drive a Modular Car for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "itemCarPassenger",                 difficulty = "easy", amountGoal = 1000, desc = "Be a Modular Car passenger for total distance (mount to unmount point)" },
+            new ZQuest{ type = "travel", item = "snowmobiledriverseat",             difficulty = "easy", amountGoal = 1000, desc = "Drive a SnowMobile for total distance" },
+            new ZQuest{ type = "travel", item = "submarinesolodriverstanding",      difficulty = "easy", amountGoal = 1000, desc = "Captain a Solo Submarine for total distance" },
+            new ZQuest{ type = "travel", item = "submarineduodriverseat",           difficulty = "easy", amountGoal = 1000, desc = "Captain a Duo Submarine for total distance" },
+            new ZQuest{ type = "travel", item = "modularcardriverseat",             difficulty = "easy", amountGoal = 1000, desc = "Drive a Modular Car for total distance" },
+            new ZQuest{ type = "travel", item = "itemCarPassenger",                 difficulty = "easy", amountGoal = 1000, desc = "Be a Modular Car passenger for total distance" },
 
             //modularcardriverseat submarineduodriverseat ...(15:55:02) | [ZNQuests] DEBUG: dismount submarineduopassengerseat ...
         };
@@ -234,21 +238,21 @@ namespace Oxide.Plugins
             // catch quests                                             difficulty = "normal", 
             new ZQuest{ type = "catch", item = "fish",                  difficulty = "normal", amountGoal = 15, desc = "Catch a number of (any) Fish" },
             // travel quests                                            difficulty = "normal", 
-            new ZQuest{ type = "travel", item = "saddletest",           difficulty = "normal", amountGoal = 1500, desc = "Ride a Horse for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "miniheliseat",         difficulty = "normal", amountGoal = 5000, desc = "Pilot a Minicopter for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "minihelipassenger",    difficulty = "normal", amountGoal = 4000, desc = "Be passenger in a Minicopter for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "transporthelipilot",   difficulty = "normal", amountGoal = 5000, desc = "Pilot a Scrapheli for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "transporthelicopilot", difficulty = "normal", amountGoal = 4000, desc = "Co-Pilot a Scrapheli for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "smallboatdriver",      difficulty = "normal", amountGoal = 2000, desc = "Captain a Boat for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "smallboatpassenger",   difficulty = "normal", amountGoal = 2000, desc = "Be a Boat/RHIB passenger for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "standingdriver",       difficulty = "normal", amountGoal = 2000, desc = "Captain a RHIB for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "snowmobiledriverseat",             difficulty = "normal", amountGoal = 3500, desc = "Drive a SnowMobile for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "snowmobilepassengerseat tomaha",   difficulty = "normal", amountGoal = 3500, desc = "Be a SnowMobile passenger for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarinesolodriverstanding",      difficulty = "normal", amountGoal = 2500, desc = "Captain a Solo Submarine for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarineduodriverseat",           difficulty = "normal", amountGoal = 2500, desc = "Captain a Duo Submarine for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarineduopassengerseat",        difficulty = "normal", amountGoal = 2500, desc = "Be a Duo Submarine passenger for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "modularcardriverseat",             difficulty = "normal", amountGoal = 3500, desc = "Drive a Modular Car for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "itemCarPassenger",                 difficulty = "normal", amountGoal = 3500, desc = "Be a Modular Car passenger for total distance (mount to unmount point)" },
+            new ZQuest{ type = "travel", item = "saddletest",           difficulty = "normal", amountGoal = 1500, desc = "Ride a Horse for total distance" },
+            new ZQuest{ type = "travel", item = "miniheliseat",         difficulty = "normal", amountGoal = 5000, desc = "Pilot a Minicopter for total distance" },
+            new ZQuest{ type = "travel", item = "minihelipassenger",    difficulty = "normal", amountGoal = 4000, desc = "Be passenger in a Minicopter for total distance" },
+            new ZQuest{ type = "travel", item = "transporthelipilot",   difficulty = "normal", amountGoal = 5000, desc = "Pilot a Scrapheli for total distance" },
+            new ZQuest{ type = "travel", item = "transporthelicopilot", difficulty = "normal", amountGoal = 4000, desc = "Co-Pilot a Scrapheli for total distance" },
+            new ZQuest{ type = "travel", item = "smallboatdriver",      difficulty = "normal", amountGoal = 2000, desc = "Captain a Boat for total distance" },
+            new ZQuest{ type = "travel", item = "smallboatpassenger",   difficulty = "normal", amountGoal = 2000, desc = "Be a Boat/RHIB passenger for total distance" },
+            new ZQuest{ type = "travel", item = "standingdriver",       difficulty = "normal", amountGoal = 2000, desc = "Captain a RHIB for total distance" },
+            new ZQuest{ type = "travel", item = "snowmobiledriverseat",             difficulty = "normal", amountGoal = 3500, desc = "Drive a SnowMobile for total distance" },
+            new ZQuest{ type = "travel", item = "snowmobilepassengerseat tomaha",   difficulty = "normal", amountGoal = 3500, desc = "Be a SnowMobile passenger for total distance" },
+            new ZQuest{ type = "travel", item = "submarinesolodriverstanding",      difficulty = "normal", amountGoal = 2500, desc = "Captain a Solo Submarine for total distance" },
+            new ZQuest{ type = "travel", item = "submarineduodriverseat",           difficulty = "normal", amountGoal = 2500, desc = "Captain a Duo Submarine for total distance" },
+            new ZQuest{ type = "travel", item = "submarineduopassengerseat",        difficulty = "normal", amountGoal = 2500, desc = "Be a Duo Submarine passenger for total distance" },
+            new ZQuest{ type = "travel", item = "modularcardriverseat",             difficulty = "normal", amountGoal = 3500, desc = "Drive a Modular Car for total distance" },
+            new ZQuest{ type = "travel", item = "itemCarPassenger",                 difficulty = "normal", amountGoal = 3500, desc = "Be a Modular Car passenger for total distance" },
 
         };
         private static List<ZQuest> AvailableHardQuests = new List<ZQuest>
@@ -283,26 +287,26 @@ namespace Oxide.Plugins
             // catch quests                                             
             new ZQuest{ type = "catch", item = "fish",                   difficulty = "hard", amountGoal = 30, desc = "Catch a number of (any) Fish" },
             // travel quests                                            
-            new ZQuest{ type = "travel", item = "saddletest",            difficulty = "hard", amountGoal = 5000, desc = "Ride a Horse for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "miniheliseat",          difficulty = "hard", amountGoal = 10000, desc = "Pilot a Minicopter for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "minihelipassenger",     difficulty = "hard", amountGoal = 10000, desc = "Be passenger in a Minicopter for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "transporthelipilot",    difficulty = "hard", amountGoal = 10000, desc = "Pilot a Scrapheli for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "transporthelicopilot",  difficulty = "hard", amountGoal = 10000, desc = "Co-Pilot a Scrapheli for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "smallboatdriver",       difficulty = "hard", amountGoal = 10000, desc = "Captain a Boat for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "smallboatpassenger",    difficulty = "hard", amountGoal = 10000, desc = "Be a Boat/RHIB passenger for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "standingdriver",        difficulty = "hard", amountGoal = 10000, desc = "Captain a RHIB for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "snowmobiledriverseat",             difficulty = "hard", amountGoal = 10000, desc = "Drive a SnowMobile for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "snowmobilepassengerseat tomaha",   difficulty = "hard", amountGoal = 10000, desc = "Be a SnowMobile passenger for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarinesolodriverstanding",      difficulty = "hard", amountGoal = 10000, desc = "Captain a Solo Submarine for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarineduodriverseat",           difficulty = "hard", amountGoal = 10000, desc = "Captain a Duo Submarine for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "submarineduopassengerseat",        difficulty = "hard", amountGoal = 10000, desc = "Be a Duo Submarine passenger for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "modularcardriverseat",             difficulty = "hard", amountGoal = 10000, desc = "Drive a Modular Car for total distance (mount to unmount point)" },
-            new ZQuest{ type = "travel", item = "itemCarPassenger",                 difficulty = "hard", amountGoal = 10000, desc = "Be a Modular Car passenger for total distance (mount to unmount point)" },
+            new ZQuest{ type = "travel", item = "saddletest",            difficulty = "hard", amountGoal = 5000, desc = "Ride a Horse for total distance" },
+            new ZQuest{ type = "travel", item = "miniheliseat",          difficulty = "hard", amountGoal = 10000, desc = "Pilot a Minicopter for total distance" },
+            new ZQuest{ type = "travel", item = "minihelipassenger",     difficulty = "hard", amountGoal = 10000, desc = "Be passenger in a Minicopter for total distance" },
+            new ZQuest{ type = "travel", item = "transporthelipilot",    difficulty = "hard", amountGoal = 10000, desc = "Pilot a Scrapheli for total distance" },
+            new ZQuest{ type = "travel", item = "transporthelicopilot",  difficulty = "hard", amountGoal = 10000, desc = "Co-Pilot a Scrapheli for total distance" },
+            new ZQuest{ type = "travel", item = "smallboatdriver",       difficulty = "hard", amountGoal = 10000, desc = "Captain a Boat for total distance" },
+            new ZQuest{ type = "travel", item = "smallboatpassenger",    difficulty = "hard", amountGoal = 10000, desc = "Be a Boat/RHIB passenger for total distance" },
+            new ZQuest{ type = "travel", item = "standingdriver",        difficulty = "hard", amountGoal = 10000, desc = "Captain a RHIB for total distance" },
+            new ZQuest{ type = "travel", item = "snowmobiledriverseat",             difficulty = "hard", amountGoal = 10000, desc = "Drive a SnowMobile for total distance" },
+            new ZQuest{ type = "travel", item = "snowmobilepassengerseat tomaha",   difficulty = "hard", amountGoal = 10000, desc = "Be a SnowMobile passenger for total distance" },
+            new ZQuest{ type = "travel", item = "submarinesolodriverstanding",      difficulty = "hard", amountGoal = 10000, desc = "Captain a Solo Submarine for total distance" },
+            new ZQuest{ type = "travel", item = "submarineduodriverseat",           difficulty = "hard", amountGoal = 10000, desc = "Captain a Duo Submarine for total distance" },
+            new ZQuest{ type = "travel", item = "submarineduopassengerseat",        difficulty = "hard", amountGoal = 10000, desc = "Be a Duo Submarine passenger for total distance" },
+            new ZQuest{ type = "travel", item = "modularcardriverseat",             difficulty = "hard", amountGoal = 10000, desc = "Drive a Modular Car for total distance" },
+            new ZQuest{ type = "travel", item = "itemCarPassenger",                 difficulty = "hard", amountGoal = 10000, desc = "Be a Modular Car passenger for total distance" },
 
         };
         private List<Dictionary<string, int>> rewardList = new List<Dictionary<string, int>>();
 
-        public Dictionary<ulong, Vector3> playerMountPoints = new Dictionary<ulong, Vector3>();
+        // public Dictionary<ulong, Vector3> playerMountPoints = new Dictionary<ulong, Vector3>();
         // multi type items to kill
         public Dictionary<string, string> itemList = new Dictionary<string, string>()
         {
@@ -861,23 +865,62 @@ namespace Oxide.Plugins
 
         void OnEntityMounted(BaseMountable entity, BasePlayer player)
         {
-            if (playerMountPoints.ContainsKey(player.userID))
+            if (!playerGotQuest(player, "travel", entity.ShortPrefabName)) return;
+
+            if (playersTravelMonitor.ContainsKey(player.userID))
             {
-                playerMountPoints[player.userID] = entity.transform.position;
+                playersTravelMonitor[player.userID].lastLocation = entity.transform.position;
             }
             else
             {
-                playerMountPoints.Add(player.userID, entity.transform.position);
+                playersTravelMonitor.Add(player.userID, new TravelMonitor(){ lastLocation = entity.transform.position });
             }
+
+            playersTravelMonitor[player.userID].KillTimer();
+            playersTravelMonitor[player.userID].timer = Plugin.timer.Repeat(
+                5f,
+                0,
+                () =>
+                {
+                    if (player.GetMountedVehicle() == null)
+                    {
+                        if (playersTravelMonitor.ContainsKey(player.userID))
+                        {
+                            playersTravelMonitor[player.userID].KillTimer();
+                            playersTravelMonitor.Remove(player.userID);
+                        }
+                        return;
+                    }
+
+                    int distance = (int)Math.Floor(Vector3Ex.Distance2D(entity.transform.position, playersTravelMonitor[player.userID].lastLocation));
+                    playersTravelMonitor[player.userID].lastLocation = entity.transform.position;
+
+                    if(distance > 500)
+                    {
+                        PrintWarning($"Suspicious {entity.ShortPrefabName} travel distance of {distance} - {player.displayName}");
+                        return;
+                    }
+
+                    questProgress(player, "travel", entity.ShortPrefabName, distance);
+
+                    if (!playerGotQuest(player, "travel", entity.ShortPrefabName)) playersTravelMonitor[player.userID].KillTimer();
+                }
+            );
         }
         void OnEntityDismounted(BaseMountable entity, BasePlayer player)
         {
-            if (playerMountPoints.ContainsKey(player.userID))
+            if (playersTravelMonitor.ContainsKey(player.userID))
             {
-                int distance = (int)Math.Floor(Vector3Ex.Distance2D(entity.transform.position, playerMountPoints[player.userID]));
-                playerMountPoints.Remove(player.userID);
-                questProgress(player, "travel", entity.ShortPrefabName, distance);
-                //Puts("DEBUG: dismount " + entity.ShortPrefabName + " ...");
+                int distance = (int)Math.Floor(Vector3Ex.Distance2D(entity.transform.position, playersTravelMonitor[player.userID].lastLocation));
+
+                if(distance > 500)
+                    PrintWarning($"Suspicious {entity.ShortPrefabName} travel distance of {distance} - {player.displayName}");
+                else
+                    questProgress(player, "travel", entity.ShortPrefabName, distance);
+
+                playersTravelMonitor[player.userID].KillTimer();
+                playersTravelMonitor.Remove(player.userID);
+                // Puts("DEBUG: dismount " + entity.ShortPrefabName + " ...");
             }
         }
         #endregion
@@ -1124,6 +1167,15 @@ namespace Oxide.Plugins
                 _qm[player.userID].AddQuestProgress(type, itemName, amount);
             }
 
+        }
+
+        private bool playerGotQuest(BasePlayer player, string type, string itemName)
+        {
+            if (!_qm.ContainsKey(player.userID)) return false;
+
+            if (itemList.ContainsKey(itemName)) itemName = itemList[itemName];
+
+            return _qm[player.userID].HasActiveQuest(type, itemName);
         }
 
         private void showInfoText(BasePlayer player)
@@ -2016,7 +2068,6 @@ namespace Oxide.Plugins
                                 +"\n- You can Claim rewards in Blood OR XP"
                                 +"\n- Claiming rewards has a price (trade RP for XP or bleach for RP)"
                                 +"\n- With each claimed quest the reward & price rises!"
-                                +"\n- 'travel' quests only count distance between start and end (don't drive circles!)"
                                 +"\n\nGLOBAL BONUS:\n- After "+Cfg.globalQuestClaimThreshold+" claims you can get a Bonus"
                                 +"\n- The more players globally contribute, the more XP bonus everyone gets"
                                 +"\n- The more quests you claim the higher your Global Bonus share"
@@ -2388,5 +2439,23 @@ namespace Oxide.Plugins
         {
             return Convert.ToDecimal(number).ToString("N", nfi);
         }
+    
+        #region TravelMonitor
+
+        public Dictionary<ulong, TravelMonitor> playersTravelMonitor = new Dictionary<ulong, TravelMonitor>();
+
+        public class TravelMonitor
+        {
+            public Timer timer;
+            public Vector3 lastLocation { get; set; }
+
+            public void KillTimer()
+            {
+                if (timer != null)
+                    timer.Destroy();
+            }
+        }
+
+        #endregion
     }
 }   
