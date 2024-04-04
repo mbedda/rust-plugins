@@ -245,7 +245,7 @@ namespace Oxide.Plugins
             new ZQuest{ type = "travel", item = "transporthelicopilot", difficulty = "normal", amountGoal = 4000, desc = "Co-Pilot a Scrapheli for total distance" },
             new ZQuest{ type = "travel", item = "smallboatdriver",      difficulty = "normal", amountGoal = 2000, desc = "Captain a Boat for total distance" },
             new ZQuest{ type = "travel", item = "smallboatpassenger",   difficulty = "normal", amountGoal = 2000, desc = "Be a Boat/RHIB passenger for total distance" },
-            new ZQuest{ type = "travel", item = "standingdriver",       difficulty = "normal", amountGoal = 2000, desc = "Captain a RHIB for total distance" },
+            new ZQuest{ type = "travel", item = "rhibdriver",           difficulty = "normal", amountGoal = 2000, desc = "Captain a RHIB for total distance" },
             new ZQuest{ type = "travel", item = "snowmobiledriverseat",             difficulty = "normal", amountGoal = 3500, desc = "Drive a SnowMobile for total distance" },
             new ZQuest{ type = "travel", item = "snowmobilepassengerseat tomaha",   difficulty = "normal", amountGoal = 3500, desc = "Be a SnowMobile passenger for total distance" },
             new ZQuest{ type = "travel", item = "submarinesolodriverstanding",      difficulty = "normal", amountGoal = 2500, desc = "Captain a Solo Submarine for total distance" },
